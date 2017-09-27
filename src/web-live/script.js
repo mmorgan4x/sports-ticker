@@ -2,7 +2,7 @@ $(function () {
 
     api.sport = 'baseball';
     api.league = 'mlb';
-    api.teamId = api.getMlbTeamId('SF');
+    api.teamId = api.getMlbTeamId('CLE');
 
     api.getTodaysGame(todaysGame => {
         if (todaysGame) {
