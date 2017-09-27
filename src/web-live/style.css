@@ -1,0 +1,41 @@
+body{
+    font-family:Roboto;
+    color:#333;
+    padding-top: 100px;
+}
+
+
+.game{
+    display: flex;
+    align-items: center;
+}
+
+.game>div{
+    flex-grow: 1
+}
+
+.abbr{
+    font-size:42px;
+ }
+ 
+ .record{
+     color:#ccc;
+     font-size:24px;
+ }
+ 
+ #HomeScore, #AwayScore{
+     font-size: 200px;
+     
+ }
+
+ #Line1, #Line2{
+     font-size: 50px;
+}
+
+#Line1{
+   color:#ff5000; 
+}
+
+.faded{
+    color:#ccc;
+}
