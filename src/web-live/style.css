@@ -24,12 +24,12 @@ body{
  }
  
  #HomeScore, #AwayScore{
-     font-size: 200px;
+     font-size: 150px;
      
  }
 
  #Line1, #Line2{
-     font-size: 50px;
+     font-size: 30px;
 }
 
 #Line1{
