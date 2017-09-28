@@ -8,6 +8,9 @@ body{
 .game{
     display: flex;
     align-items: center;
+    max-width: 980px;
+    margin: auto;
+    text-align:center;
 }
 
 .game>div{

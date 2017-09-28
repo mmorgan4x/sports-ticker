@@ -1,8 +1,7 @@
 $(function () {
 
-    api.sport = getParameterByName('sport') || 'baseball';
-    api.league = getParameterByName('league') || 'mlb';
-    api.teamId = api.getMlbTeamId(getParameterByName('team') || 'CLE');
+    api.league = Utils.getParameterByName('league') || 'mlb';
+    api.teamId = Utils.getParameterByName('teamId') || api.getTeamId(Utils.getParameterByName('team') || 'CLE');
 
     getGame();
     function getGame() {
@@ -12,28 +11,38 @@ $(function () {
                 var gameStart = new Date(todaysGame.date);
                 var status = todaysGame.status.name;
 
-                clearGameState();
                 api.getTeamInfo(todaysGame.homeTeam.id, t => renderTeamInfo(t, true));
                 api.getTeamInfo(todaysGame.awayTeam.id, t => renderTeamInfo(t, false));
 
                 if (status == 'Pregame') {
                     renderGameStart(gameStart);
-                    setTimeout(getGame, 10000);
+                    setTimeout(getGame, (gameStart.getTime() - new Date().getTime()) * .9);
+                    console.info(new Date().toLocaleTimeString() + ':', 'Pregame - waiting ' + (((gameStart.getTime() - new Date().getTime()) * .9) / 60000) + ' minutes');
                 }
-                else {
+                else if (status == 'In Progress') {
                     updateGame();
-                    var gameStateInterval = setInterval(updateGame, 5000);
-
                     function updateGame() {
                         api.getScoreUpdate(gameId, gameState => {
-                            renderGameState(gameState);
-                            if (gameState.Status == 'Final') {
-                                clearInterval(gameStateInterval);
-                                setTimeout(getGame, 10000);
+                            if (gameState.Status == 'In Progress') {
+                                renderGameState(gameState);
+                                setTimeout(updateGame, 5 * 1000);
+                                console.info(new Date().toLocaleTimeString() + ':', 'Updated - waiting 5 seconds...');
+                            }
+                            else {
+                                getGame();
                             }
                         })
                     }
                 }
+                else if (status == 'Final') {
+                    renderGameFinal(todaysGame.score);
+                    setTimeout(getGame, 4 * 60 * 60 * 1000);
+                    console.info(new Date().toLocaleTimeString() + ':', 'Final - waiting 4 hours...');
+                }
+            }
+            else {
+                setTimeout(getGame, 4 * 60 * 60 * 1000);
+                console.info(new Date().toLocaleTimeString() + ':', 'No Game Today - waiting 4 hours...');
             }
         });
     }
@@ -52,50 +61,36 @@ function renderTeamInfo(team, isHome) {
 }
 
 function renderGameStart(time) {
-    $('#Line1').html(time.toLocaleDateString())
-    $('#Line2').html(formatTime(time));
+    clearGameState();
+    $('#Line1').html(time.toLocaleDateString());
+    $('#Line2').html(Utils.formatTime(time));
 }
 
 function renderGameState(gameState) {
-    if (gameState.Status == 'In Progress') {
-        $('#HomeScore').html(gameState.HomeScore);
-        $('#AwayScore').html(gameState.AwayScore);
+    clearGameState();
+    $('#HomeScore').html(gameState.HomeScore);
+    $('#AwayScore').html(gameState.AwayScore);
 
-        var suffix = ['', 'st', 'nd', 'rd'][gameState.Inning] || 'th';
-        var desc = gameState.IsActive ? (gameState.IsInningTop ? 'Top' : 'Bottom') : (gameState.IsInningTop ? 'End' : 'Middle');
-        var inning = (desc == 'End' ? gameState.Inning - 1 : gameState.Inning);
-        $('#Line1').html(desc + ' ' + inning + suffix)
-        $('#Line2').html(gameState.IsActive ? (gameState.Outs + (gameState.Outs == 1 ? ' out' : ' outs')) : '');
-    }
-    else if (gameState.Status == 'Final') {
-        $('#HomeScore').html(gameState.HomeScore);
-        $('#AwayScore').html(gameState.AwayScore);
+    var suffix = ['', 'st', 'nd', 'rd'][gameState.Inning] || 'th';
+    var marker = gameState.IsActive ? (gameState.IsInningTop ? 'Top' : 'Bottom') : (gameState.IsInningTop ? 'End' : 'Middle');
+    var inning = (marker == 'End' ? gameState.Inning - 1 : gameState.Inning);
 
-        $('#Line1').html('')
-        if (gameState.HomeScore > gameState.AwayScore) {
-            $('#AwayScore').addClass('faded');
-            $('#Line2').html('Final <i class="fa fa-caret-right"></i>');
-        }
-        else {
-            $('#HomeScore').addClass('faded');
-            $('#Line2').html('<i class="fa fa-caret-left"></i> Final');
-        }
-    }
+    $('#Line1').html(marker + ' ' + inning + suffix)
+    $('#Line2').html(gameState.IsActive ? (gameState.Outs + (gameState.Outs == 1 ? ' out' : ' outs')) : '');
 }
 
+function renderGameFinal(score) {
+    clearGameState();
+    $('#HomeScore').html(score.homeScore);
+    $('#AwayScore').html(score.awayScore);
 
-function getParameterByName(name) {
-    var url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
-
-function formatTime(d) {
-    function z(n) { return (n < 10 ? '0' : '') + n }
-    var h = d.getHours();
-    return (h % 12 || 12) + ':' + z(d.getMinutes()) + ' ' + (h < 12 ? 'AM' : 'PM');
+    $('#Line1').html('')
+    if (score.homeScore > score.awayScore) {
+        $('#AwayScore').addClass('faded');
+        $('#Line2').html('Final <i class="fa fa-caret-right"></i>');
+    }
+    else {
+        $('#HomeScore').addClass('faded');
+        $('#Line2').html('<i class="fa fa-caret-left"></i> Final');
+    }
 }
