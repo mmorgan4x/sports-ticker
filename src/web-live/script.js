@@ -22,7 +22,7 @@ $(function () {
                 }
                 else {
                     updateGame();
-                    var gameStateInterval = setInterval(() => updateGame, 5000);
+                    var gameStateInterval = setInterval(updateGame, 5000);
 
                     function updateGame() {
                         api.getScoreUpdate(gameId, gameState => {
