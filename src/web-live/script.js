@@ -62,8 +62,9 @@ function renderGameState(gameState) {
         $('#AwayScore').html(gameState.AwayScore);
 
         var suffix = ['', 'st', 'nd', 'rd'][gameState.Inning] || 'th';
-        var desc = gameState.IsActive ? (gameState.IsInningTop ? 'Top ' : 'Bottom ') : (gameState.IsInningTop ? 'End ' : 'Middle ');
-        $('#Line1').html(desc + gameState.Inning + suffix)
+        var desc = gameState.IsActive ? (gameState.IsInningTop ? 'Top' : 'Bottom') : (gameState.IsInningTop ? 'End' : 'Middle');
+        var inning = (desc == 'End' ? gameState.Inning - 1 : gameState.Inning);
+        $('#Line1').html(desc + ' ' + inning + suffix)
         $('#Line2').html(gameState.IsActive ? (gameState.Outs + (gameState.Outs == 1 ? ' out' : ' outs')) : '');
     }
     else if (gameState.Status == 'Final') {
