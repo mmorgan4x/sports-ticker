@@ -20,7 +20,7 @@ $(function () {
                     var timeout = Math.round((gameStart.getTime() - new Date().getTime())/1000 * .9);
                     timeout = timeout < 10 ? 10 : timeout;
                     setTimeout(getGame, timeout * 1000);
-                    console.info(new Date().toLocaleTimeString() + ':', 'Pregame - waiting ' + timeout / 60 + ' minutes');
+                    console.info(new Date().toLocaleTimeString() + ':', 'Pregame - waiting ' + Math.round(timeout / 60) + ' minutes');
                 }
                 else if (status == 'In Progress') {
                     updateGame();
