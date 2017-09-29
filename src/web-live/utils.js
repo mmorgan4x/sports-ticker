@@ -15,7 +15,10 @@ var Utils = {
         return (h % 12 || 12) + ':' + z(d.getMinutes()) + ' ' + (h < 12 ? 'AM' : 'PM');
     },
 
-    logTimeout(status, timeout) {
+    setTimeout(cb, timeout, status) {
+        timeout = timeout < 1000 ? 1000 : timeout;
+        setTimeout(cb, timeout)
+
         timeout /= 1000;
         var suffix = '';
         if (timeout < 60) {
@@ -29,6 +32,7 @@ var Utils = {
             suffix = ' hours'
             timeout /= 60 * 60;
         }
+        
         console.info(new Date().toLocaleTimeString() + ':', status + ' - waiting ' + timeout + suffix + '...');
     }
 }
