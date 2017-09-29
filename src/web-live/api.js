@@ -1,4 +1,4 @@
-var api = {
+var Api = {
 
     league: null,
     teamId: null,

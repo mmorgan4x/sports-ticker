@@ -1,23 +1,23 @@
 $(function () {
 
-    api.league = Utils.getParameterByName('league') || 'mlb';
-    api.teamId = Utils.getParameterByName('teamId') || api.getTeamId(Utils.getParameterByName('team') || 'CLE');
+    Api.league = Utils.getParameterByName('league') || 'mlb';
+    Api.teamId = Utils.getParameterByName('teamId') || Api.getTeamId(Utils.getParameterByName('team') || 'CLE');
 
     getGame();
     function getGame() {
-        api.getTodaysGame(todaysGame => {
+        Api.getTodaysGame(todaysGame => {
             if (todaysGame) {
                 var gameId = todaysGame.id;
                 var gameStart = new Date(todaysGame.date);
                 var status = todaysGame.status.name;
 
-                api.getTeamInfo(todaysGame.homeTeam.id, t => renderTeamInfo(t, true));
-                api.getTeamInfo(todaysGame.awayTeam.id, t => renderTeamInfo(t, false));
+                Api.getTeamInfo(todaysGame.homeTeam.id, t => renderTeamInfo(t, true));
+                Api.getTeamInfo(todaysGame.awayTeam.id, t => renderTeamInfo(t, false));
 
                 if (status == 'Pregame') {
                     renderGameStart(gameStart);
-                    
-                    var timeout = Math.round((gameStart.getTime() - new Date().getTime())/1000 * .9);
+
+                    var timeout = Math.round((gameStart.getTime() - new Date().getTime()) / 1000 * .9);
                     timeout = timeout < 10 ? 10 : timeout;
                     setTimeout(getGame, timeout * 1000);
                     console.info(new Date().toLocaleTimeString() + ':', 'Pregame - waiting ' + Math.round(timeout / 60) + ' minutes');
@@ -25,7 +25,7 @@ $(function () {
                 else if (status == 'In Progress') {
                     updateGame();
                     function updateGame() {
-                        api.getScoreUpdate(gameId, gameState => {
+                        Api.getScoreUpdate(gameId, gameState => {
                             if (gameState.Status == 'In Progress') {
                                 renderGameState(gameState);
                                 setTimeout(updateGame, 5 * 1000);
@@ -44,6 +44,7 @@ $(function () {
                 }
             }
             else {
+                renderNoGame();
                 setTimeout(getGame, 4 * 60 * 60 * 1000);
                 console.info(new Date().toLocaleTimeString() + ':', 'No Game Today - waiting 4 hours...');
             }
@@ -63,6 +64,12 @@ function renderTeamInfo(team, isHome) {
     selector.find('.record').html(team.record.wins + ' - ' + team.record.losses);
 }
 
+function renderNoGame(time) {
+    clearGameState();
+    $('.logo, .abbr, .record').html('');
+    $('#Line2').html('No Game Today');
+}
+
 function renderGameStart(time) {
     clearGameState();
     $('#Line1').html(time.toLocaleDateString());
@@ -74,12 +81,19 @@ function renderGameState(gameState) {
     $('#HomeScore').html(gameState.HomeScore);
     $('#AwayScore').html(gameState.AwayScore);
 
-    var suffix = ['', 'st', 'nd', 'rd'][gameState.Inning] || 'th';
-    var marker = gameState.IsActive ? (gameState.IsInningTop ? 'Top' : 'Bottom') : (gameState.IsInningTop ? 'End' : 'Middle');
-    var inning = (marker == 'End' ? gameState.Inning - 1 : gameState.Inning);
+    if (Api.sport == 'baseball') {
+        var suffix = ['', 'st', 'nd', 'rd'][gameState.Inning] || 'th';
+        var marker = gameState.IsActive ? (gameState.IsInningTop ? 'Top' : 'Bottom') : (gameState.IsInningTop ? 'End' : 'Middle');
+        var inning = (marker == 'End' ? gameState.Inning - 1 : gameState.Inning);
 
-    $('#Line1').html(marker + ' ' + inning + suffix)
-    $('#Line2').html(gameState.IsActive ? (gameState.Outs + (gameState.Outs == 1 ? ' out' : ' outs')) : '');
+        $('#Line1').html(marker + ' ' + inning + suffix)
+        $('#Line2').html(gameState.IsActive ? (gameState.Outs + (gameState.Outs == 1 ? ' out' : ' outs')) : '');
+    }
+    if (Api.sport == 'football' || Api.sport == 'basketball') {
+        var suffix = ['', 'st', 'nd', 'rd'][gameState.Quarter] || 'th';
+        $('#Line1').html(gameState.Quarter + suffix)
+        $('#Line2').html(gameState.Time.slice(3));
+    }
 }
 
 function renderGameFinal(score) {
