@@ -81,7 +81,7 @@ function renderGameState(gameState) {
     $('#HomeScore').html(gameState.HomeScore);
     $('#AwayScore').html(gameState.AwayScore);
 
-    if (Api.sport == 'baseball') {
+    if (Api.league == 'mlb') {
         var suffix = ['', 'st', 'nd', 'rd'][gameState.Inning] || 'th';
         var marker = gameState.IsActive ? (gameState.IsInningTop ? 'Top' : 'Bottom') : (gameState.IsInningTop ? 'End' : 'Middle');
         var inning = (marker == 'End' ? gameState.Inning - 1 : gameState.Inning);
@@ -89,7 +89,7 @@ function renderGameState(gameState) {
         $('#Line1').html(marker + ' ' + inning + suffix)
         $('#Line2').html(gameState.IsActive ? (gameState.Outs + (gameState.Outs == 1 ? ' out' : ' outs')) : '');
     }
-    if (Api.sport == 'football' || Api.sport == 'basketball') {
+    if (Api.league == 'nfl' || Api.league == 'ncf') {
         var suffix = ['', 'st', 'nd', 'rd'][gameState.Quarter] || 'th';
         $('#Line1').html(gameState.Quarter + suffix)
         $('#Line2').html(gameState.Time.slice(3));
