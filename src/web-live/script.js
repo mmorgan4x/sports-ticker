@@ -34,7 +34,7 @@ $(function main() {
                                 Utils.setTimeout(updateGame, 5 * 1000, gameState.Status);
                             }
                             else {
-                                checkGame();
+                                Utils.setTimeout(checkGame, 10 * 1000, status);
                             }
                         })
                     }
