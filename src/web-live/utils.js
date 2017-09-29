@@ -33,6 +33,8 @@ var Utils = {
             timeout /= 60 * 60;
         }
 
+        timeout = Math.round(timeout);
+
         console.info(new Date().toLocaleTimeString() + ':', status + ' - waiting ' + timeout + suffix + '...');
     }
 }
