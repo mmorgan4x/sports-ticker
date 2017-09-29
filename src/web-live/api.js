@@ -45,7 +45,7 @@ var Api = {
         if (this.league == 'mlb') {
             url = 'https://api.foxsports.com/sportsdata/v1/live/' + this.league + '/scores.json?date=' + this.gameDate + '&t=' + time + '&apikey=' + this.apiKey;
         }
-        if (this.league == 'nlf') {
+        if (this.league == 'nfl') {
             url = 'https://api.foxsports.com/sportsdata/v1/live/' + this.league + '/scores.json?season=2017&seasontype=reg&week=4&t=' + time + '&apikey=' + this.apiKey;
         }
         $.get(url).done(games => {
