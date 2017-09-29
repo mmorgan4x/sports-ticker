@@ -61,7 +61,7 @@ function renderTeamInfo(team, isHome) {
     var selector = isHome ? $('#HomeTeam') : $('#AwayTeam');
     selector.find('.logo').html('<img src="' + team.links.logos.Medium + '">');
     selector.find('.abbr').html(team.abbreviation);
-    selector.find('.record').html(team.record.wins + ' - ' + team.record.losses);
+    // selector.find('.record').html(team.record.wins + ' - ' + team.record.losses);
 }
 
 function renderNoGame(time) {
