@@ -17,6 +17,10 @@ body{
     flex-grow: 1
 }
 
+.logo{
+    margin: -20px 0;
+}
+
 .abbr{
     font-size:42px;
  }
@@ -41,4 +45,8 @@ body{
 
 .faded{
     color:#ccc;
+}
+
+.transparent{
+    opacity:0;
 }
