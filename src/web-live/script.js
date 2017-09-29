@@ -6,8 +6,8 @@ $(function main() {
     var teamId = Utils.getQueryString('teamId') || Api.getTeamId(Utils.getQueryString('team'));
     Api.setTeamId(teamId);
 
-    initGame();
-    function initGame() {
+    checkGame();
+    function checkGame() {
         Api.getTodaysGame(todaysGame => {
             if (todaysGame) {
                 var gameId = todaysGame.id;
@@ -23,7 +23,7 @@ $(function main() {
 
                     var timeout = Math.round((gameStart.getTime() - new Date().getTime()) * .9);
                     timeout = timeout < 10000 ? 10000 : timeout;
-                    Utils.setTimeout(initGame, timeout, status);
+                    Utils.setTimeout(checkGame, timeout, status);
                 }
                 else if (status == 'In Progress') {
                     updateGame();
@@ -34,26 +34,26 @@ $(function main() {
                                 Utils.setTimeout(updateGame, 5 * 1000, gameState.Status);
                             }
                             else {
-                                initGame();
+                                checkGame();
                             }
                         })
                     }
                 }
                 else if (status == 'Final') {
                     Render.gameFinal(score);
-                    Utils.setTimeout(initGame, 4 * 60 * 60 * 1000, status);
+                    Utils.setTimeout(checkGame, 4 * 60 * 60 * 1000, status);
                 }
                 else if (status == 'Delayed') {
                     Render.gameDelayed(score);
-                    Utils.setTimeout(initGame, 5 * 60 * 1000, status);
+                    Utils.setTimeout(checkGame, 5 * 60 * 1000, status);
                 }
                 else {
-                    Utils.setTimeout(initGame, 10 * 60 * 1000, status);
+                    Utils.setTimeout(checkGame, 10 * 60 * 1000, status);
                 }
             }
             else {
                 Render.noGame();
-                Utils.setTimeout(initGame, 4 * 60 * 60 * 1000, 'No game today');
+                Utils.setTimeout(checkGame, 4 * 60 * 60 * 1000, 'No game today');
             }
         });
     }
