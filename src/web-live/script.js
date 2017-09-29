@@ -17,10 +17,10 @@ $(function () {
                 if (status == 'Pregame') {
                     renderGameStart(gameStart);
 
-                    var timeout = Math.round((gameStart.getTime() - new Date().getTime()) / 1000 * .9);
-                    timeout = timeout < 10 ? 10 : timeout;
-                    setTimeout(getGame, timeout * 1000);
-                    console.info(new Date().toLocaleTimeString() + ':', 'Pregame - waiting ' + Math.round(timeout / 60) + ' minutes');
+                    var timeout = Math.round((gameStart.getTime() - new Date().getTime()) * .9);
+                    timeout = timeout < 10000 ? 10000 : timeout;
+                    setTimeout(getGame, timeout);
+                    Utils.logTimeout(status, timeout)
                 }
                 else if (status == 'In Progress') {
                     updateGame();
@@ -28,8 +28,9 @@ $(function () {
                         Api.getScoreUpdate(gameId, gameState => {
                             if (gameState.Status == 'In Progress') {
                                 renderGameState(gameState);
-                                setTimeout(updateGame, 5 * 1000);
-                                console.info(new Date().toLocaleTimeString() + ':', 'Updated - waiting 5 seconds...');
+                                var timeout = 5 * 1000;
+                                setTimeout(updateGame, timeout);
+                                Utils.logTimeout('Updated', timeout)
                             }
                             else {
                                 getGame();
@@ -39,14 +40,21 @@ $(function () {
                 }
                 else if (status == 'Final') {
                     renderGameFinal(todaysGame.score);
-                    setTimeout(getGame, 4 * 60 * 60 * 1000);
-                    console.info(new Date().toLocaleTimeString() + ':', 'Final - waiting 4 hours...');
+                    var timeout = 4 * 60 * 60 * 1000;
+                    setTimeout(getGame, timeout);
+                    Utils.logTimeout(status, timeout)
+                }
+                else {
+                    var timeout = 10 * 60 * 1000;
+                    setTimeout(getGame, timeout);
+                    Utils.logTimeout(status, timeout)
                 }
             }
             else {
                 renderNoGame();
-                setTimeout(getGame, 4 * 60 * 60 * 1000);
-                console.info(new Date().toLocaleTimeString() + ':', 'No Game Today - waiting 4 hours...');
+                var timeout = 4 * 60 * 60 * 1000;
+                setTimeout(getGame, timeout);
+                Utils.logTimeout('No game today', timeout)
             }
         });
     }
