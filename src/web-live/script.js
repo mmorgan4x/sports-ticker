@@ -2,7 +2,7 @@ $(function main() {
 
     var league = Utils.getQueryString('league');
     Api.setLeague(league);
-    
+
     var teamId = Utils.getQueryString('teamId') || Api.getTeamId(Utils.getQueryString('team'));
     Api.setTeamId(teamId);
 
@@ -13,6 +13,7 @@ $(function main() {
                 var gameId = todaysGame.id;
                 var gameStart = new Date(todaysGame.date);
                 var status = todaysGame.status.name;
+                var score = todaysGame.score;
 
                 Api.getTeamInfo(todaysGame.homeTeam.id, t => Render.teamInfo(t, true));
                 Api.getTeamInfo(todaysGame.awayTeam.id, t => Render.teamInfo(t, false));
@@ -39,12 +40,12 @@ $(function main() {
                     }
                 }
                 else if (status == 'Final') {
-                    Render.gameFinal(todaysGame.score);
+                    Render.gameFinal(score);
                     Utils.setTimeout(initGame, 4 * 60 * 60 * 1000, status);
                 }
                 else if (status == 'Delayed') {
-                    Render.gameDelayed(todaysGame.score);
-                    Utils.setTimeout(initGame, 4 * 60 * 60 * 1000, status);
+                    Render.gameDelayed(score);
+                    Utils.setTimeout(initGame, 5 * 60 * 1000, status);
                 }
                 else {
                     Utils.setTimeout(initGame, 10 * 60 * 1000, status);

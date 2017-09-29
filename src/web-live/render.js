@@ -52,7 +52,11 @@ var Render = {
         }
     },
 
-    gameDelayed() {
+    gameDelayed(score) {
+        this.clearGameState();
+        $('#HomeScore').html(score.homeScore);
+        $('#AwayScore').html(score.awayScore);
+
         $('#Line1').html('Delayed');
         $('#Line2').html('');
     },
