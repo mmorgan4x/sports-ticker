@@ -1,5 +1,5 @@
 var Utils = {
-    getParameterByName(name) {
+    getQueryString(name) {
         var url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
         var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
@@ -32,7 +32,7 @@ var Utils = {
             suffix = ' hours'
             timeout /= 60 * 60;
         }
-        
+
         console.info(new Date().toLocaleTimeString() + ':', status + ' - waiting ' + timeout + suffix + '...');
     }
 }

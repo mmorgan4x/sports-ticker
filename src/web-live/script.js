@@ -1,10 +1,13 @@
 $(function main() {
 
-    Api.league = Utils.getParameterByName('league') || 'mlb';
-    Api.teamId = Utils.getParameterByName('teamId') || Api.getTeamId(Utils.getParameterByName('team') || 'CLE');
+    var league = Utils.getQueryString('league');
+    Api.setLeague(league);
+    
+    var teamId = Utils.getQueryString('teamId') || Api.getTeamId(Utils.getQueryString('team'));
+    Api.setTeamId(teamId);
 
-    getGame();
-    function getGame() {
+    initGame();
+    function initGame() {
         Api.getTodaysGame(todaysGame => {
             if (todaysGame) {
                 var gameId = todaysGame.id;
@@ -19,37 +22,37 @@ $(function main() {
 
                     var timeout = Math.round((gameStart.getTime() - new Date().getTime()) * .9);
                     timeout = timeout < 10000 ? 10000 : timeout;
-                    Utils.setTimeout(getGame, timeout, status);
+                    Utils.setTimeout(initGame, timeout, status);
                 }
                 else if (status == 'In Progress') {
                     updateGame();
                     function updateGame() {
-                        Api.getScoreUpdate(gameId, gameState => {
+                        Api.getGameState(gameId, gameState => {
                             if (gameState.Status == 'In Progress') {
                                 Render.gameState(gameState);
                                 Utils.setTimeout(updateGame, 5 * 1000, gameState.Status);
                             }
                             else {
-                                getGame();
+                                initGame();
                             }
                         })
                     }
                 }
                 else if (status == 'Final') {
                     Render.gameFinal(todaysGame.score);
-                    Utils.setTimeout(getGame, 4 * 60 * 60 * 1000, status);
+                    Utils.setTimeout(initGame, 4 * 60 * 60 * 1000, status);
                 }
                 else if (status == 'Delayed') {
                     Render.gameDelayed(todaysGame.score);
-                    Utils.setTimeout(getGame, 4 * 60 * 60 * 1000, status);
+                    Utils.setTimeout(initGame, 4 * 60 * 60 * 1000, status);
                 }
                 else {
-                    Utils.setTimeout(getGame, 10 * 60 * 1000, status);
+                    Utils.setTimeout(initGame, 10 * 60 * 1000, status);
                 }
             }
             else {
                 Render.noGame();
-                Utils.setTimeout(getGame, 4 * 60 * 60 * 1000, 'No game today');
+                Utils.setTimeout(initGame, 4 * 60 * 60 * 1000, 'No game today');
             }
         });
     }

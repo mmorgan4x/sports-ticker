@@ -1,7 +1,7 @@
 var Render = {
     clearGame() {
         $('.logo, .abbr, .record').html('');
-        clearGameState();
+        this.clearGameState();
     },
 
     clearGameState() {
