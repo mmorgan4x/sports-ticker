@@ -41,7 +41,13 @@ var Api = {
 
     getScoreUpdate(gameId, cb) {
         var time = new Date().toJSON().replace(/-|T|:/g, '').substr(0, 14);
-        var url = 'https://api.foxsports.com/sportsdata/v1/live/' + this.league + '/scores.json?date=' + this.gameDate + '&t=' + time + '&apikey=' + this.apiKey;
+        var url = ''
+        if (this.league == 'mlb') {
+            url = 'https://api.foxsports.com/sportsdata/v1/live/' + this.league + '/scores.json?date=' + this.gameDate + '&t=' + time + '&apikey=' + this.apiKey;
+        }
+        if (this.league == 'nlf') {
+            url = 'https://api.foxsports.com/sportsdata/v1/live/' + this.league + '/scores.json?season=2017&seasontype=reg&week=4&t=' + time + '&apikey=' + this.apiKey;
+        }
         $.get(url).done(games => {
             var gameState = games.find(t => t.GameState.GameId == gameId).GameState;
             cb(gameState);
