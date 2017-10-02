@@ -11,7 +11,7 @@ $(function main() {
         Api.getTodaysGame(todaysGame => {
             if (todaysGame) {
                 var gameId = todaysGame.id;
-                var gameStart = new Date(todaysGame.date);
+                var gameStart = new Date(todaysGame.utcDate);
                 var status = todaysGame.status.name;
                 var score = todaysGame.score;
 
