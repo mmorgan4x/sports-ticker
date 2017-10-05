@@ -43,7 +43,7 @@ var Render = {
         if (Api.league == 'nfl' || Api.league == 'cfb' || Api.league == 'nba') {
             var suffix = ['', 'st', 'nd', 'rd'][gameState.Quarter] || 'th';
             $('#Line1').html(gameState.Quarter + suffix)
-            $('#Line2').html(gameState.Time.slice(3));
+            $('#Line2').html(gameState.Time.substr(3, 5));
 
             if (gameState.Time == '00:00:00' && !gameState.IsActive) {
                 $('#Line1').html(gameState.Quarter == 2 ? 'Halftime' : ('End ' + gameState.Quarter + suffix))
