@@ -40,7 +40,7 @@ var Render = {
             $('#Line1').html(marker + ' ' + inning + suffix)
             $('#Line2').html(gameState.IsActive ? (gameState.Outs + (gameState.Outs == 1 ? ' out' : ' outs')) : '');
         }
-        if (Api.league == 'nfl' || Api.league == 'cfb') {
+        if (Api.league == 'nfl' || Api.league == 'cfb' || Api.league == 'nba') {
             var suffix = ['', 'st', 'nd', 'rd'][gameState.Quarter] || 'th';
             $('#Line1').html(gameState.Quarter + suffix)
             $('#Line2').html(gameState.Time.slice(3));
