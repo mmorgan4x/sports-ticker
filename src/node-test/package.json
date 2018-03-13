@@ -1,0 +1,19 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "scripts": {
+    "start": "tsc && node main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/core-js": "^0.9.46",
+    "@types/node": "^9.4.7",
+    "@types/request-promise": "^4.1.41",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
+    "typescript": "^2.7.2"
+  }
+}
