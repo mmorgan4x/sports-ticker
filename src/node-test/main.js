@@ -36,38 +36,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var http = require("request-promise");
-var apiKey = 'jE7yBJVRNAwdDesMgTzTXUUSx1It41Fq';
+var onoff_1 = require("onoff");
 console.log('starting...');
+var led = new onoff_1.Gpio(17, 'out');
+var state = false;
 (function () { return __awaiter(_this, void 0, void 0, function () {
-    var i, res, _a, _b, _c;
-    return __generator(this, function (_d) {
-        switch (_d.label) {
-            case 0:
-                i = 1;
-                _d.label = 1;
-            case 1:
-                if (!(i < 33)) return [3 /*break*/, 6];
-                _d.label = 2;
-            case 2:
-                _d.trys.push([2, 4, , 5]);
-                _b = (_a = JSON).parse;
-                return [4 /*yield*/, http.get(getTeamInfo(i))];
-            case 3:
-                res = _b.apply(_a, [_d.sent()]);
-                console.log(res.location);
-                return [3 /*break*/, 5];
-            case 4:
-                _c = _d.sent();
-                console.log('err');
-                return [3 /*break*/, 5];
-            case 5:
-                i++;
-                return [3 /*break*/, 1];
-            case 6: return [2 /*return*/];
-        }
+    return __generator(this, function (_a) {
+        setInterval(function (t) {
+            state = !state;
+            led.writeSync(state ? 1 : 0);
+        }, 1000);
+        return [2 /*return*/];
     });
 }); })();
-function getTeamInfo(id) {
-    return "https://api.foxsports.com/sportsdata/v1/basketball/nba/teams/" + id + ".json?&apikey=" + apiKey;
-}

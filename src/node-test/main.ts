@@ -1,21 +1,13 @@
-import * as http from 'request-promise';
+import { Gpio } from 'onoff';
 
-const apiKey = 'jE7yBJVRNAwdDesMgTzTXUUSx1It41Fq';
 console.log('starting...');
 
+let led = new Gpio(17, 'out');
+let state = false;
+
 (async () => {
-  for (let i = 1; i < 33; i++) {
-    try {
-      let res = JSON.parse(await http.get(getTeamInfo(i)))
-      console.log(res.location);
-    }
-    catch {
-      console.log('err');
-    }
-  }
+  setInterval(t => {
+    state = !state;
+    led.writeSync(state ? 1 : 0)
+  }, 1000)
 })();
-
-
-function getTeamInfo(id: number) {
-  return `https://api.foxsports.com/sportsdata/v1/basketball/nba/teams/${id}.json?&apikey=${apiKey}`;
-}
