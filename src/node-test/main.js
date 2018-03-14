@@ -45,6 +45,7 @@ var state = false;
         setInterval(function (t) {
             state = !state;
             led.writeSync(state ? 1 : 0);
+            console.log(state ? 'on' : 'off');
         }, 1000);
         return [2 /*return*/];
     });
