@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "start": "tsc && node main.js"
+    "start": "tsc-watch --onSuccess \"node main.js\""
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,7 @@
     "@types/request-promise": "^4.1.41",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
+    "tsc-watch": "^1.0.16",
     "typescript": "^2.7.2"
   }
 }

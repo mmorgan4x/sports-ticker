@@ -38,15 +38,16 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var http = require("request-promise");
 var apiKey = 'jE7yBJVRNAwdDesMgTzTXUUSx1It41Fq';
+console.log('starting...');
 (function () { return __awaiter(_this, void 0, void 0, function () {
     var i, res, _a, _b, _c;
     return __generator(this, function (_d) {
         switch (_d.label) {
             case 0:
-                i = 0;
+                i = 1;
                 _d.label = 1;
             case 1:
-                if (!(i < 32)) return [3 /*break*/, 6];
+                if (!(i < 33)) return [3 /*break*/, 6];
                 _d.label = 2;
             case 2:
                 _d.trys.push([2, 4, , 5]);
