@@ -3,8 +3,8 @@ import * as http from 'request-promise';
 const apiKey = 'jE7yBJVRNAwdDesMgTzTXUUSx1It41Fq';
 console.log('starting...');
 
-(async () => { 
-  for (let i = 1; i < 33; i++) {  
+(async () => {
+  for (let i = 1; i < 33; i++) {
     try {
       let res = JSON.parse(await http.get(getTeamInfo(i)))
       console.log(res.location);

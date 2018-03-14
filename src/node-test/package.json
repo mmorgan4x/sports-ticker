@@ -4,7 +4,9 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "start": "tsc-watch --onSuccess \"node main.js\""
+    "start": "tsc-watch --onSuccess \"node main.js\"",
+    "prod": "tsc && node main.js",
+    "tsc":"tsc"
   },
   "author": "",
   "license": "ISC",
