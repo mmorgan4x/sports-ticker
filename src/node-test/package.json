@@ -4,9 +4,11 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "start": "tsc-watch --onSuccess \"node main.js\"",
-    "prod": "tsc && node main.js",
-    "tsc": "tsc"
+    "dev": "tsc-watch --onSuccess \"node main.js\"",
+    "start": "node main.js",
+    "build": "tsc",
+    "onoff": "sudo npm i onoff && sudo /opt/nodejs/bin/node-gyp rebuild --directory=node_modules/epoll",
+    "addpath": "export PATH=$PATH:/opt/nodejs/bin/"
   },
   "author": "",
   "license": "ISC",

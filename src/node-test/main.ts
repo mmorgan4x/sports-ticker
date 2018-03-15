@@ -9,6 +9,6 @@ let state = false;
   setInterval(t => {
     state = !state;
     led.writeSync(state ? 1 : 0);
-    console.log(state ? 'on' : 'off')
+    console.log(state ? 'onn' : 'offf')
   }, 1000)
 })();
