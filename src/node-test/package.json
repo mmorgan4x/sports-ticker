@@ -7,7 +7,7 @@
     "dev": "tsc-watch --onSuccess \"node main.js\"",
     "start": "node main.js",
     "build": "tsc",
-    "onoff": "sudo npm i onoff && sudo /opt/nodejs/bin/node-gyp rebuild --directory=node_modules/epoll",
+    "onoff": "sudo /opt/nodejs/bin/node-gyp rebuild --directory=node_modules/epoll",
     "addpath": "export PATH=$PATH:/opt/nodejs/bin/"
   },
   "author": "",
@@ -17,7 +17,7 @@
     "@types/node": "^9.4.7",
     "@types/onoff": "0.0.27",
     "@types/request-promise": "^4.1.41",
-    "request": "^2.85.0",
+    "onoff": "^2.0.0",
     "request-promise": "^4.2.2",
     "tsc-watch": "^1.0.16",
     "typescript": "^2.7.2"
