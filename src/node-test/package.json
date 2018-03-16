@@ -4,10 +4,10 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "dev": "tsc-watch --onSuccess \"node main.js\"",
     "start": "node main.js",
     "build": "tsc",
-    "onoff": "sudo /opt/nodejs/bin/node-gyp rebuild --directory=node_modules/epoll",
+    "watch": "tsc-watch --onSuccess \"npm start\"",
+    "epoll": "sudo /opt/nodejs/bin/node-gyp rebuild --directory=node_modules/epoll",
     "addpath": "export PATH=$PATH:/opt/nodejs/bin/"
   },
   "author": "",
@@ -18,6 +18,7 @@
     "@types/onoff": "0.0.27",
     "@types/request-promise": "^4.1.41",
     "onoff": "^2.0.0",
+    "request": "^2.85.0",
     "request-promise": "^4.2.2",
     "tsc-watch": "^1.0.16",
     "typescript": "^2.7.2"
