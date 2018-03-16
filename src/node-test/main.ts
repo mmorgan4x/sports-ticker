@@ -1,12 +1,14 @@
-import * as http from 'request-promise';
+import * as request from 'request-promise';
+import { utils } from './utils';
+import { server } from './server';
 
-const apiKey = 'jE7yBJVRNAwdDesMgTzTXUUSx1It41Fq';
-console.log('starting...');
+console.log('[starting app...]');
+server.start();
 
 (async () => {
   for (let i = 1; i < 33; i++) {
     try {
-      let res = JSON.parse(await http.get(getTeamInfo(i)))
+      let res = JSON.parse(await request.get(utils.getTeamInfo(i)))
       console.log(res.location);
     }
     catch {
@@ -14,8 +16,3 @@ console.log('starting...');
     }
   }
 })();
-
-
-function getTeamInfo(id: number) {
-  return `https://api.foxsports.com/sportsdata/v1/basketball/nba/teams/${id}.json?&apikey=${apiKey}`;
-}

@@ -36,9 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var http = require("request-promise");
-var apiKey = 'jE7yBJVRNAwdDesMgTzTXUUSx1It41Fq';
-console.log('starting...');
+var request = require("request-promise");
+var utils_1 = require("./utils");
+var server_1 = require("./server");
+console.log('[starting app...]');
+server_1.server.start();
 (function () { return __awaiter(_this, void 0, void 0, function () {
     var i, res, _a, _b, _c;
     return __generator(this, function (_d) {
@@ -52,7 +54,7 @@ console.log('starting...');
             case 2:
                 _d.trys.push([2, 4, , 5]);
                 _b = (_a = JSON).parse;
-                return [4 /*yield*/, http.get(getTeamInfo(i))];
+                return [4 /*yield*/, request.get(utils_1.utils.getTeamInfo(i))];
             case 3:
                 res = _b.apply(_a, [_d.sent()]);
                 console.log(res.location);
@@ -68,6 +70,3 @@ console.log('starting...');
         }
     });
 }); })();
-function getTeamInfo(id) {
-    return "https://api.foxsports.com/sportsdata/v1/basketball/nba/teams/" + id + ".json?&apikey=" + apiKey;
-}
