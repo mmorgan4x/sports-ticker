@@ -1,3 +1,4 @@
+import * as request from 'request-promise';
 const apiKey = 'jE7yBJVRNAwdDesMgTzTXUUSx1It41Fq';
 
 class Utils {
