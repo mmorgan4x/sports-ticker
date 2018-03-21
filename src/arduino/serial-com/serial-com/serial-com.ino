@@ -16,8 +16,8 @@ void loop() {
   //  }
 
   delay(1000);
-  Serial.println("helllo");
-  Serial.println("hey");
+  Serial.println("{\"type\":\"req\",\"event\":\"prn\"}");
+  //  Serial.println("hey");
   //  Serial.println("hey");
   //  Serial.println("sup");
 }
