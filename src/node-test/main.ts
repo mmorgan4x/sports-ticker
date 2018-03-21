@@ -6,7 +6,7 @@ import { SerialIO } from './scripts/serial.io';
 
 console.log('[starting app...]');
 // server.start();
-// device.start();
+device.start();
 
 
 
@@ -21,11 +21,3 @@ console.log('[starting app...]');
 //     }
 //   }
 // })();
-
-(async () => {
-    let device = new SerialIO('COM15');
-    console.log('opened: ', await device.open());
-    device.on('prn', t => {
-        console.log('hey')
-    })
-})();

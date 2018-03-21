@@ -1,36 +1,29 @@
-import * as  SerialPort from 'serialport';
+import { SerialIO } from './serial.io';
 
-const baudRate = 9600;
-const delimiter = '\r\n';
+// const baudRate = 9600;
+// const delimiter = '\r\n';
 
 class Device {
-    reconnectInterval: any;
-
     async start() {
-        let com = (await SerialPort.list())[0].comName;
+        let com = (await SerialIO.list())[0].comName;
 
-        let port = new SerialPort(com, { baudRate: baudRate });
-        let parser = port.pipe(new SerialPort.parsers.Readline({ delimiter: delimiter }));
+        let device = new SerialIO(com, { baudRate: 9600 });
+        console.log(`[opened port: ${await device.open()}]`);
 
-        port.on('open', t => {
-            console.log(`[opening ${com}...]`);
-        });
-        parser.on('data', data => {
-            console.log('Data:', data);
-        });
 
-        port.on('error', err => {
-            console.log('error port: ' + err)
-        });
-        parser.on('error', err => {
-            console.log('error parser:', err);
-        });
-        port.on('close', err => {
-            console.log('close port: ' + err)
+        device.on('log', (args: any[]) => {
+            console.log(...args);
         })
-        parser.on('close', err => {
-            console.log('close parser: ' + err)
-        })
+
+        let func: any;
+        setTimeout(func = async () => {
+            device.emit('tick');
+            let val = await device.onAsync('tick');
+            if (val) {
+                console.log(val[0] / 1000);
+            }
+            setTimeout(func, 1000);
+        }, 1000);
     }
 }
 

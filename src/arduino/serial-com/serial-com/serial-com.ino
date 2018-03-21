@@ -1,23 +1,22 @@
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
 }
 
+String buffer = "";
 void loop() {
-  // put your main code here, to run repeatedly:
 
-  //  if (Serial.available() > 0) {
-  //    // read the incoming byte:
-  //    int incomingByte = Serial.read();
-  //
-  //    // say what you got:
-  //    Serial.print("I received: ");
-  //    Serial.println(incomingByte);
-  //  }
+  if (Serial.available() > 0) {
+    char recieved = Serial.read();
 
-  delay(1000);
-  Serial.println("{\"type\":\"req\",\"event\":\"prn\"}");
-  //  Serial.println("hey");
-  //  Serial.println("hey");
-  //  Serial.println("sup");
+    if (recieved == '\r') { }
+    else if (recieved == '\n') {
+      if (buffer == "tick:") {
+        Serial.println(String("tick:") + millis());
+      }
+      buffer = "";
+    }
+    else {
+      buffer += recieved;
+    }
+  }
 }

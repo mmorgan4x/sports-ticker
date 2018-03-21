@@ -1,37 +1,23 @@
 import * as SerialPort from 'serialport';
-import * as usb from "usb";
 import { EventEmitter } from "events";
 import { OpenOptions } from "serialport";
-type Message = { type: 'req' | 'res', event: string, args?: any[] }
 
 export class SerialIO {
 
     private serialPort: SerialPort;
     private path: string;
-    private requestEmitter = new EventEmitter();
-    private responseEmitter = new EventEmitter();
-    public events = new EventEmitter();
+    private emitter = new EventEmitter();
 
     constructor(path: string, openOptions?: OpenOptions) {
         this.path = path;
         openOptions = Object.assign({ autoOpen: false }, openOptions);
         this.serialPort = new SerialPort(this.path, openOptions);
 
-        this.serialPort.on('open', t => this.events.emit('open', t));
-        this.serialPort.on('close', t => this.events.emit('close', t));
-        this.serialPort.on('error', t => this.events.emit('error', t));
-        usb.on('attach', t => { this.events.emit('attach', t) });
-        usb.on('detach', t => { this.events.emit('detach', t) });
-
-        this.serialPort.on('data', (buffer: Buffer) => {
-            // console.log("{\"type\":\"req\",\"event\":\"prn\",\"data\":12}")
-            let msg: Message = JSON.parse(buffer.toString());
-            if (msg.type == 'req') {
-                this.requestEmitter.emit(msg.event, msg.args);
-            }
-            if (msg.type == 'res') {
-                this.responseEmitter.emit(msg.event, msg.args);
-            }
+        let parser = this.serialPort.pipe(new SerialPort.parsers.Readline({ delimiter: '\r\n' }));
+        parser.on('data', (buffer: Buffer) => {
+            // console.log('buffer: ', buffer.toString());
+            let msg = this.deserialize(buffer.toString());
+            this.emitter.emit(msg.event, msg.args);
         });
     }
 
@@ -39,9 +25,9 @@ export class SerialIO {
         return SerialPort.list();
     }
 
-    open() {
+    async open() {
         return new Promise<string>((resolve, reject) => {
-            this.serialPort.open(err => err ? reject(err) : resolve(this.path))
+            this.serialPort.open(err => err ? reject(err) : setTimeout(t => resolve(this.path), 2000))
         })
     }
 
@@ -52,50 +38,31 @@ export class SerialIO {
     }
 
     on(event: string, listener: (...args: any[]) => void) {
-        return this.requestEmitter.on(event, listener);
+        return this.emitter.on(event, listener);
     }
-    once(event: string, listener: (...args: any[]) => void) {
-        return this.requestEmitter.once(event, listener);
-    }
-    off(event: string, listener: (...args: any[]) => void) {
-        return this.requestEmitter.removeListener(event, listener);
+
+    onAsync(event: string) {
+        return new Promise<any[]>((res, rej) => {
+            this.emitter.once(event, res);
+            // setTimeout(() => rej(new Error('Timed Out')), 3000);
+            setTimeout(() => res(), 3000);
+        });
     }
 
     emit(event: string, ...args: any[]) {
-        let msg: Message = { type: 'req', event: event, args: args };
-        this.serialPort.write(JSON.stringify(msg));
+        let msg = this.serialize(event, args);
+        this.serialPort.write(msg + '\r\n');
         return true;
     }
 
-    request(event: string, ...args: any[]) {
-        let response = new Promise<any[]>((resolve, reject) => {
-            let successFn: (data) => void;
-            let errorFn: (err) => void;
-
-            successFn = (args) => {
-                this.responseEmitter.removeListener(event, successFn);
-                this.responseEmitter.removeListener('error', errorFn);
-                resolve(args);
-            }
-
-            errorFn = (err) => {
-                this.responseEmitter.removeListener(event, successFn);
-                this.responseEmitter.removeListener('error', errorFn);
-                reject(err);
-            }
-
-            this.responseEmitter.on(event, successFn);
-            this.responseEmitter.on('error', errorFn);
-            setTimeout(() => errorFn(new Error('Request Timed Out')), 3000);
-        });
-
-        let msg: Message = { type: 'req', event: event, args: args };
-        this.serialPort.write(JSON.stringify(msg));
-        return response;
+    private deserialize(msg: string) {
+        let event = msg.substring(0, msg.indexOf(':'));
+        let argsStr = msg.substring(msg.indexOf(':') + 1, msg.length);
+        let args = argsStr ? argsStr.split(',') : [];
+        return { event, args }
     }
 
-    respond(event: string, ...args: any[]) {
-        let msg: Message = { type: 'res', event: event, args: args };
-        this.serialPort.write(JSON.stringify(msg));
+    private serialize(event: string, ...args: any[]) {
+        return event + ':' + args.join(',');
     }
 }

@@ -35,40 +35,47 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var SerialPort = require("serialport");
-var baudRate = 9600;
-var delimiter = '\r\n';
+var serial_io_1 = require("./serial.io");
+// const baudRate = 9600;
+// const delimiter = '\r\n';
 var Device = /** @class */ (function () {
     function Device() {
     }
     Device.prototype.start = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var com, port, parser;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, SerialPort.list()];
+            var _this = this;
+            var com, device, _a, _b, _c, func;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0: return [4 /*yield*/, serial_io_1.SerialIO.list()];
                     case 1:
-                        com = (_a.sent())[0].comName;
-                        port = new SerialPort(com, { baudRate: baudRate });
-                        parser = port.pipe(new SerialPort.parsers.Readline({ delimiter: delimiter }));
-                        port.on('open', function (t) {
-                            console.log("[opening " + com + "...]");
+                        com = (_d.sent())[0].comName;
+                        device = new serial_io_1.SerialIO(com, { baudRate: 9600 });
+                        _b = (_a = console).log;
+                        _c = "[opened port: ";
+                        return [4 /*yield*/, device.open()];
+                    case 2:
+                        _b.apply(_a, [_c + (_d.sent()) + "]"]);
+                        device.on('log', function (args) {
+                            console.log.apply(console, args);
                         });
-                        parser.on('data', function (data) {
-                            console.log('Data:', data);
-                        });
-                        port.on('error', function (err) {
-                            console.log('error port: ' + err);
-                        });
-                        parser.on('error', function (err) {
-                            console.log('error parser:', err);
-                        });
-                        port.on('close', function (err) {
-                            console.log('close port: ' + err);
-                        });
-                        parser.on('close', function (err) {
-                            console.log('close parser: ' + err);
-                        });
+                        setTimeout(func = function () { return __awaiter(_this, void 0, void 0, function () {
+                            var val;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        device.emit('tick');
+                                        return [4 /*yield*/, device.onAsync('tick')];
+                                    case 1:
+                                        val = _a.sent();
+                                        if (val) {
+                                            console.log(val[0] / 1000);
+                                        }
+                                        setTimeout(func, 1000);
+                                        return [2 /*return*/];
+                                }
+                            });
+                        }); }, 1000);
                         return [2 /*return*/];
                 }
             });
