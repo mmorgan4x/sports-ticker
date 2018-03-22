@@ -49,7 +49,7 @@ var Device = /** @class */ (function () {
                     case 0: return [4 /*yield*/, serial_io_1.SerialIO.list()];
                     case 1:
                         com = (_d.sent())[0].comName;
-                        device = new serial_io_1.SerialIO(com, { baudRate: 9600 });
+                        device = new serial_io_1.SerialIO(com, { baudRate: 115200 });
                         _b = (_a = console).log;
                         _c = "[opened port: ";
                         return [4 /*yield*/, device.open()];
@@ -63,7 +63,7 @@ var Device = /** @class */ (function () {
                         return [4 /*yield*/, device.poll('digitalWrite')];
                     case 4:
                         _d.sent();
-                        return [4 /*yield*/, new Promise(function (t) { return setTimeout(t, 100); })];
+                        return [4 /*yield*/, new Promise(function (t) { return setTimeout(t, 500); })];
                     case 5:
                         _d.sent();
                         console.log('low');
@@ -71,7 +71,7 @@ var Device = /** @class */ (function () {
                         return [4 /*yield*/, device.poll('digitalWrite')];
                     case 6:
                         _d.sent();
-                        return [4 /*yield*/, new Promise(function (t) { return setTimeout(t, 100); })];
+                        return [4 /*yield*/, new Promise(function (t) { return setTimeout(t, 500); })];
                     case 7:
                         _d.sent();
                         return [3 /*break*/, 3];
