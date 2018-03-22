@@ -11,19 +11,16 @@ class Device {
         console.log(`[opened port: ${await device.open()}]`);
 
 
-        device.on('log', (args: any[]) => {
-            console.log(...args);
-        })
-
-        let func: any;
-        setTimeout(func = async () => {
-            device.emit('tick');
-            let val = await device.onAsync('tick');
-            if (val) {
-                console.log(val[0] / 1000);
-            }
-            setTimeout(func, 1000);
-        }, 1000);
+        while (true) {
+            console.log('high')
+            device.emit('digitalWrite', 13, 'HIGH');
+            await device.poll('digitalWrite');
+            await new Promise(t => setTimeout(t, 100));
+            console.log('low')
+            device.emit('digitalWrite', 13, 'LOW');
+            await device.poll('digitalWrite');
+            await new Promise(t => setTimeout(t, 100));
+        }
     }
 }
 

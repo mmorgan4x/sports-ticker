@@ -41,10 +41,11 @@ var SerialIO = /** @class */ (function () {
     function SerialIO(path, openOptions) {
         var _this = this;
         this.emitter = new events_1.EventEmitter();
+        this.delimiter = '\n';
         this.path = path;
         openOptions = Object.assign({ autoOpen: false }, openOptions);
         this.serialPort = new SerialPort(this.path, openOptions);
-        var parser = this.serialPort.pipe(new SerialPort.parsers.Readline({ delimiter: '\r\n' }));
+        var parser = this.serialPort.pipe(new SerialPort.parsers.Readline({ delimiter: this.delimiter }));
         parser.on('data', function (buffer) {
             // console.log('buffer: ', buffer.toString());
             var msg = _this.deserialize(buffer.toString());
@@ -59,7 +60,8 @@ var SerialIO = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        _this.serialPort.open(function (err) { return err ? reject(err) : setTimeout(function (t) { return resolve(_this.path); }, 2000); });
+                        // this.serialPort.open(err => err ? reject(err) : setTimeout(t => resolve(this.path), 2000))
+                        _this.serialPort.open(function (err) { return err ? reject(err) : resolve(_this.path); });
                     })];
             });
         });
@@ -73,7 +75,7 @@ var SerialIO = /** @class */ (function () {
     SerialIO.prototype.on = function (event, listener) {
         return this.emitter.on(event, listener);
     };
-    SerialIO.prototype.onAsync = function (event) {
+    SerialIO.prototype.poll = function (event) {
         var _this = this;
         return new Promise(function (res, rej) {
             _this.emitter.once(event, res);
@@ -87,7 +89,7 @@ var SerialIO = /** @class */ (function () {
             args[_i - 1] = arguments[_i];
         }
         var msg = this.serialize(event, args);
-        this.serialPort.write(msg + '\r\n');
+        this.serialPort.write(msg + this.delimiter);
         return true;
     };
     SerialIO.prototype.deserialize = function (msg) {

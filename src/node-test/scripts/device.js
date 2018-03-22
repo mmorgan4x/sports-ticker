@@ -43,8 +43,7 @@ var Device = /** @class */ (function () {
     }
     Device.prototype.start = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            var com, device, _a, _b, _c, func;
+            var com, device, _a, _b, _c;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0: return [4 /*yield*/, serial_io_1.SerialIO.list()];
@@ -56,27 +55,27 @@ var Device = /** @class */ (function () {
                         return [4 /*yield*/, device.open()];
                     case 2:
                         _b.apply(_a, [_c + (_d.sent()) + "]"]);
-                        device.on('log', function (args) {
-                            console.log.apply(console, args);
-                        });
-                        setTimeout(func = function () { return __awaiter(_this, void 0, void 0, function () {
-                            var val;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        device.emit('tick');
-                                        return [4 /*yield*/, device.onAsync('tick')];
-                                    case 1:
-                                        val = _a.sent();
-                                        if (val) {
-                                            console.log(val[0] / 1000);
-                                        }
-                                        setTimeout(func, 1000);
-                                        return [2 /*return*/];
-                                }
-                            });
-                        }); }, 1000);
-                        return [2 /*return*/];
+                        _d.label = 3;
+                    case 3:
+                        if (!true) return [3 /*break*/, 8];
+                        console.log('high');
+                        device.emit('digitalWrite', 13, 'HIGH');
+                        return [4 /*yield*/, device.poll('digitalWrite')];
+                    case 4:
+                        _d.sent();
+                        return [4 /*yield*/, new Promise(function (t) { return setTimeout(t, 100); })];
+                    case 5:
+                        _d.sent();
+                        console.log('low');
+                        device.emit('digitalWrite', 13, 'LOW');
+                        return [4 /*yield*/, device.poll('digitalWrite')];
+                    case 6:
+                        _d.sent();
+                        return [4 /*yield*/, new Promise(function (t) { return setTimeout(t, 100); })];
+                    case 7:
+                        _d.sent();
+                        return [3 /*break*/, 3];
+                    case 8: return [2 /*return*/];
                 }
             });
         });

@@ -7,13 +7,14 @@ export class SerialIO {
     private serialPort: SerialPort;
     private path: string;
     private emitter = new EventEmitter();
+    private delimiter = '\n';
 
     constructor(path: string, openOptions?: OpenOptions) {
         this.path = path;
         openOptions = Object.assign({ autoOpen: false }, openOptions);
         this.serialPort = new SerialPort(this.path, openOptions);
 
-        let parser = this.serialPort.pipe(new SerialPort.parsers.Readline({ delimiter: '\r\n' }));
+        let parser = this.serialPort.pipe(new SerialPort.parsers.Readline({ delimiter: this.delimiter }));
         parser.on('data', (buffer: Buffer) => {
             // console.log('buffer: ', buffer.toString());
             let msg = this.deserialize(buffer.toString());
@@ -27,7 +28,8 @@ export class SerialIO {
 
     async open() {
         return new Promise<string>((resolve, reject) => {
-            this.serialPort.open(err => err ? reject(err) : setTimeout(t => resolve(this.path), 2000))
+            // this.serialPort.open(err => err ? reject(err) : setTimeout(t => resolve(this.path), 2000))
+            this.serialPort.open(err => err ? reject(err) : resolve(this.path))
         })
     }
 
@@ -41,7 +43,7 @@ export class SerialIO {
         return this.emitter.on(event, listener);
     }
 
-    onAsync(event: string) {
+    poll(event: string) {
         return new Promise<any[]>((res, rej) => {
             this.emitter.once(event, res);
             // setTimeout(() => rej(new Error('Timed Out')), 3000);
@@ -51,7 +53,7 @@ export class SerialIO {
 
     emit(event: string, ...args: any[]) {
         let msg = this.serialize(event, args);
-        this.serialPort.write(msg + '\r\n');
+        this.serialPort.write(msg + this.delimiter);
         return true;
     }
 
