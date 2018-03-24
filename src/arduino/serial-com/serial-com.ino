@@ -25,16 +25,6 @@ void loop() {
   }
 }
 
-void runCommand() {
-  if (event == "ping") {
-    emit("pong", "", "", "", "");
-  }
-  if (event == "digitalWrite") {
-    digitalWrite(arg0.toInt(), arg1 == "LOW" ? LOW : HIGH);
-    emit("digitalWrite", arg0, arg1, "", "");
-  }
-}
-
 void emit(String event, String rArg0 , String rArg1, String rArg2, String rArg3 ) {
   String msg = event + ":";
 
@@ -65,6 +55,21 @@ void setParams(String msg) {
   arg1 = args[1];
   arg2 = args[2];
   arg3 = args[3];
+}
+
+void runCommand() {
+  if (event == "ping") {
+    emit("pong", "", "", "", "");
+  }
+  if (event == "digitalWrite") {
+    digitalWrite(arg0.toInt(), (arg1 == "LOW" ? LOW : HIGH));
+    emit("digitalWrite", "", "", "", "");
+  }
+  if (event == "digitalRead") {
+    pinMode(arg0.toInt(), INPUT);
+    String rArg0 = String(digitalRead(arg0.toInt()));
+    emit("digitalRead", rArg0, "", "", "");
+  }
 }
 
 

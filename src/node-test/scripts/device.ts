@@ -12,13 +12,10 @@ class Device {
 
 
         while (true) {
-            console.log('high')
-            device.emit('digitalWrite', 13, 'HIGH');
-            await device.poll('digitalWrite');
-            await new Promise(t => setTimeout(t, 500));
-            console.log('low')
-            device.emit('digitalWrite', 13, 'LOW');
-            await device.poll('digitalWrite');
+            console.log('read')
+            device.emit('digitalRead', 6);
+            let val = (await device.poll('digitalRead'));
+            console.log(val);
             await new Promise(t => setTimeout(t, 500));
         }
     }
