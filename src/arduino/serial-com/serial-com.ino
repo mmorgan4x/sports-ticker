@@ -38,7 +38,7 @@ void runCommand() {
 void emit(String event, String rArg0 , String rArg1, String rArg2, String rArg3 ) {
   String msg = event + ":";
 
-  msg += (rArg0 == NULL ? "" : ("," + rArg0));
+  msg += (rArg0 == NULL ? "" : (rArg0));
   msg += (rArg1 == NULL ? "" : ("," + rArg1));
   msg += (rArg2 == NULL ? "" : ("," + rArg2));
   msg += (rArg3 == NULL ? "" : ("," + rArg3));
