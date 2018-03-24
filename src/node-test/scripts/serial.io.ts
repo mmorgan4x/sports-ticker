@@ -28,8 +28,8 @@ export class SerialIO {
 
     async open() {
         return new Promise<string>((resolve, reject) => {
-            // this.serialPort.open(err => err ? reject(err) : setTimeout(t => resolve(this.path), 2000))
-            this.serialPort.open(err => err ? reject(err) : resolve(this.path))
+            this.serialPort.open(err => err ? reject(err) : setTimeout(t => resolve(this.path), 2000))
+            // this.serialPort.open(err => err ? reject(err) : resolve(this.path))
         })
     }
 

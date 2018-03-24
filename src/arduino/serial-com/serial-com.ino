@@ -25,15 +25,8 @@ void loop() {
   }
 }
 
-void emit(String event, String rArg0 , String rArg1, String rArg2, String rArg3 ) {
-  String msg = event + ":";
-
-  msg += (rArg0 == NULL ? "" : (rArg0));
-  msg += (rArg1 == NULL ? "" : ("," + rArg1));
-  msg += (rArg2 == NULL ? "" : ("," + rArg2));
-  msg += (rArg3 == NULL ? "" : ("," + rArg3));
-
-  Serial.print(msg + '\n');
+void emit(String event, String val) {
+  Serial.print(event + ":" + val + '\n');
 }
 
 void setParams(String msg) {
@@ -57,18 +50,42 @@ void setParams(String msg) {
   arg3 = args[3];
 }
 
+int getPin(String pin) {
+  //TODO A1,A2,,,
+  return pin.toInt();
+}
+
 void runCommand() {
   if (event == "ping") {
-    emit("pong", "", "", "", "");
+    emit("pong", "");
+  }
+  if (event == "pinMode") {
+    pinMode(getPin(arg0), (arg1 == "INPUT" ? INPUT : (arg1 == "OUTPUT" ? OUTPUT : INPUT_PULLUP)));
+    emit("pinMode", "");
   }
   if (event == "digitalWrite") {
-    digitalWrite(arg0.toInt(), (arg1 == "LOW" ? LOW : HIGH));
-    emit("digitalWrite", "", "", "", "");
+    digitalWrite(getPin(arg0), true);
+    emit("digitalWrite", "");
   }
   if (event == "digitalRead") {
-    pinMode(arg0.toInt(), INPUT);
-    String rArg0 = String(digitalRead(arg0.toInt()));
-    emit("digitalRead", rArg0, "", "", "");
+    String val = String(digitalRead(getPin(arg0)));
+    emit("digitalRead", val);
+  }
+  if (event == "analogWrite") {
+    analogWrite(getPin(arg0), arg1.toInt());
+    emit("analogWrite", "");
+  }
+  if (event == "analogRead") {
+    String val = String(analogRead(getPin(arg0)));
+    emit("analogRead", val);
+  }
+  if (event == "millis") {
+    String val = String(millis());
+    emit("millis", val);
+  }
+  if (event == "micros") {
+    String val = String(micros());
+    emit("micros", val);
   }
 }
 

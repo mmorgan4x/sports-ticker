@@ -1,22 +1,19 @@
 import { SerialIO } from './serial.io';
+import { Arduino } from './arduino';
 
 // const baudRate = 9600;
 // const delimiter = '\r\n';
 
 class Device {
     async start() {
-        let com = (await SerialIO.list())[0].comName;
+        let arduino = new Arduino();
+        await arduino.connect();
 
-        let device = new SerialIO(com, { baudRate: 115200 });
-        console.log(`[opened port: ${await device.open()}]`);
-
+        let state = true;
+        setInterval(t => state = !state, 500)
 
         while (true) {
-            console.log('read')
-            device.emit('digitalRead', 6);
-            let val = (await device.poll('digitalRead'));
-            console.log(val);
-            await new Promise(t => setTimeout(t, 500));
+            await arduino.digitalWrite(13, state);
         }
     }
 }

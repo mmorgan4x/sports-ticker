@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var serial_io_1 = require("./serial.io");
+var arduino_1 = require("./arduino");
 // const baudRate = 9600;
 // const delimiter = '\r\n';
 var Device = /** @class */ (function () {
@@ -43,32 +43,24 @@ var Device = /** @class */ (function () {
     }
     Device.prototype.start = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var com, device, _a, _b, _c, val;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0: return [4 /*yield*/, serial_io_1.SerialIO.list()];
+            var arduino, state;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        arduino = new arduino_1.Arduino();
+                        return [4 /*yield*/, arduino.connect()];
                     case 1:
-                        com = (_d.sent())[0].comName;
-                        device = new serial_io_1.SerialIO(com, { baudRate: 115200 });
-                        _b = (_a = console).log;
-                        _c = "[opened port: ";
-                        return [4 /*yield*/, device.open()];
+                        _a.sent();
+                        state = true;
+                        setInterval(function (t) { return state = !state; }, 500);
+                        _a.label = 2;
                     case 2:
-                        _b.apply(_a, [_c + (_d.sent()) + "]"]);
-                        _d.label = 3;
+                        if (!true) return [3 /*break*/, 4];
+                        return [4 /*yield*/, arduino.digitalWrite(13, state)];
                     case 3:
-                        if (!true) return [3 /*break*/, 6];
-                        console.log('read');
-                        device.emit('digitalRead', 6);
-                        return [4 /*yield*/, device.poll('digitalRead')];
-                    case 4:
-                        val = (_d.sent());
-                        console.log(val);
-                        return [4 /*yield*/, new Promise(function (t) { return setTimeout(t, 500); })];
-                    case 5:
-                        _d.sent();
-                        return [3 /*break*/, 3];
-                    case 6: return [2 /*return*/];
+                        _a.sent();
+                        return [3 /*break*/, 2];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

@@ -60,8 +60,8 @@ var SerialIO = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        // this.serialPort.open(err => err ? reject(err) : setTimeout(t => resolve(this.path), 2000))
-                        _this.serialPort.open(function (err) { return err ? reject(err) : resolve(_this.path); });
+                        _this.serialPort.open(function (err) { return err ? reject(err) : setTimeout(function (t) { return resolve(_this.path); }, 2000); });
+                        // this.serialPort.open(err => err ? reject(err) : resolve(this.path))
                     })];
             });
         });
