@@ -64,7 +64,7 @@ void runCommand() {
     emit("pinMode", "");
   }
   if (event == "digitalWrite") {
-    digitalWrite(getPin(arg0), true);
+    digitalWrite(getPin(arg0), (arg1 == "LOW" ? LOW : HIGH));
     emit("digitalWrite", "");
   }
   if (event == "digitalRead") {
