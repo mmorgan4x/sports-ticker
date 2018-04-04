@@ -36,9 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var serial_io_1 = require("./serial.io");
-// const baudRate = 9600;
-// const delimiter = '\r\n';
-// type Pin = number | 'A1' | 'A2';
 var Arduino = /** @class */ (function () {
     function Arduino() {
     }
@@ -50,12 +47,13 @@ var Arduino = /** @class */ (function () {
                     case 0: return [4 /*yield*/, serial_io_1.SerialIO.list()];
                     case 1:
                         com = (_d.sent())[0].comName;
-                        this.arduino = new serial_io_1.SerialIO(com, { baudRate: 115200 });
+                        this.serial = new serial_io_1.SerialIO(com, { baudRate: 115200 });
                         _b = (_a = console).log;
                         _c = "[ardino opened port: ";
-                        return [4 /*yield*/, this.arduino.open()];
+                        return [4 /*yield*/, this.serial.open()];
                     case 2:
                         _b.apply(_a, [_c + (_d.sent()) + "]"]);
+                        this.serial.on('println', function (t) { return console.log(t && t[0]); });
                         return [2 /*return*/];
                 }
             });
@@ -83,8 +81,8 @@ var Arduino = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.arduino.emit('ping');
-                        return [4 /*yield*/, this.arduino.poll('pong')];
+                        this.serial.emit('ping');
+                        return [4 /*yield*/, this.serial.poll('pong')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -97,8 +95,8 @@ var Arduino = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.arduino.emit('pinMode', pin, mode);
-                        return [4 /*yield*/, this.arduino.poll('pinMode')];
+                        this.serial.emit('pinMode', pin, mode);
+                        return [4 /*yield*/, this.serial.poll('pinMode')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -112,8 +110,8 @@ var Arduino = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         value = (value == false || value == 'LOW' ? 'LOW' : 'HIGH');
-                        this.arduino.emit('digitalWrite', pin, value);
-                        return [4 /*yield*/, this.arduino.poll('digitalWrite')];
+                        this.serial.emit('digitalWrite', pin, value);
+                        return [4 /*yield*/, this.serial.poll('digitalWrite')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -127,8 +125,8 @@ var Arduino = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.arduino.emit('digitalRead', pin);
-                        return [4 /*yield*/, this.arduino.poll('digitalRead')];
+                        this.serial.emit('digitalRead', pin);
+                        return [4 /*yield*/, this.serial.poll('digitalRead')];
                     case 1:
                         vals = (_a.sent());
                         return [2 /*return*/, vals[0] == '1'];
@@ -141,8 +139,8 @@ var Arduino = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.arduino.emit('analogWrite', pin, value);
-                        return [4 /*yield*/, this.arduino.poll('analogWrite')];
+                        this.serial.emit('analogWrite', pin, value);
+                        return [4 /*yield*/, this.serial.poll('analogWrite')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -156,8 +154,8 @@ var Arduino = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.arduino.emit('analogRead', pin);
-                        return [4 /*yield*/, this.arduino.poll('analogRead')];
+                        this.serial.emit('analogRead', pin);
+                        return [4 /*yield*/, this.serial.poll('analogRead')];
                     case 1:
                         vals = (_a.sent());
                         return [2 /*return*/, +vals[0]];
@@ -171,8 +169,8 @@ var Arduino = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.arduino.emit('millis');
-                        return [4 /*yield*/, this.arduino.poll('millis')];
+                        this.serial.emit('millis');
+                        return [4 /*yield*/, this.serial.poll('millis')];
                     case 1:
                         vals = (_a.sent());
                         return [2 /*return*/, +vals[0]];
@@ -186,11 +184,69 @@ var Arduino = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.arduino.emit('micros');
-                        return [4 /*yield*/, this.arduino.poll('micros')];
+                        this.serial.emit('micros');
+                        return [4 /*yield*/, this.serial.poll('micros')];
                     case 1:
                         vals = (_a.sent());
                         return [2 /*return*/, +vals[0]];
+                }
+            });
+        });
+    };
+    Arduino.prototype.attachInterrupt = function (pin, mode, ISR) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.serial.emit('attachInterrupt', pin, mode);
+                        this.serial.on("interrupt" + pin, function () { return ISR(); });
+                        return [4 /*yield*/, this.serial.poll('attachInterrupt')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Arduino.prototype.detachInterrupt = function (pin) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.serial.emit('detachInterrupt', pin);
+                        this.serial.off("interrupt" + pin);
+                        return [4 /*yield*/, this.serial.poll('detachInterrupt')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Arduino.prototype.noInterrupts = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.serial.emit('noInterrupts');
+                        return [4 /*yield*/, this.serial.poll('noInterrupts')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Arduino.prototype.interrupts = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.serial.emit('interrupts');
+                        return [4 /*yield*/, this.serial.poll('interrupts')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
                 }
             });
         });

@@ -87,6 +87,57 @@ void runCommand() {
     String val = String(micros());
     emit("micros", val);
   }
+  if (event == "attachInterrupt") {
+    int pin = getPin(arg0);
+    int mode = getInterruptMode(arg1);
+
+    if (pin == 2) {
+      attachInterrupt(digitalPinToInterrupt(pin), ISRPin2, mode);
+    }
+    if (pin == 3) {
+      attachInterrupt(digitalPinToInterrupt(pin), ISRPin3, mode);
+    }
+    emit("attachInterrupt", "");
+  }
+  if (event == "detachInterrupt") {
+    int pin = getPin(arg0);
+    detachInterrupt(digitalPinToInterrupt(pin));
+    emit("detachInterrupt", "");
+  }
+  if (event == "noInterrupts") {
+    noInterrupts();
+    emit("noInterrupts", "");
+  }
+  if (event == "interrupts") {
+    interrupts();
+    emit("interrupts", "");
+  }
+}
+
+int getInterruptMode(String mode) {
+  if (mode == "LOW") {
+    return LOW;
+  }
+  if (mode == "CHANGE") {
+    return CHANGE;
+  }
+  if (mode == "RISING") {
+    return RISING;
+  }
+  if (mode == "FALLING") {
+    return FALLING;
+  }
+  if (mode == "HIGH") {
+    return HIGH;
+  }
+}
+
+void ISRPin2() {
+  emit(String("interrupt") + 2, "");
+}
+
+void ISRPin3() {
+  emit(String("interrupt") + 3, "");
 }
 
 

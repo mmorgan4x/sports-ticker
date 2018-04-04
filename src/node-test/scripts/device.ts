@@ -10,7 +10,7 @@ class Device {
         await arduino.connect();
 
         let state = true;
-        setInterval(t => state = !state, 500)
+        setInterval(t => state = !state, 500);
 
         while (true) {
             await arduino.digitalWrite(13, state);

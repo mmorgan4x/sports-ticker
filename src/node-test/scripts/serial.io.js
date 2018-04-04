@@ -75,6 +75,9 @@ var SerialIO = /** @class */ (function () {
     SerialIO.prototype.on = function (event, listener) {
         return this.emitter.on(event, listener);
     };
+    SerialIO.prototype.off = function (event) {
+        return this.emitter.removeAllListeners(event);
+    };
     SerialIO.prototype.poll = function (event) {
         var _this = this;
         return new Promise(function (res, rej) {

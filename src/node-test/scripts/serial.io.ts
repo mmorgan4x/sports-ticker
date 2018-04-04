@@ -43,6 +43,10 @@ export class SerialIO {
         return this.emitter.on(event, listener);
     }
 
+    off(event: string) {
+        return this.emitter.removeAllListeners(event);
+    }
+
     poll(event: string) {
         return new Promise<any[]>((res, rej) => {
             this.emitter.once(event, res);
